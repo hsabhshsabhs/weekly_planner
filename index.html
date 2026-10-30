@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Шахматка по неделе — планировщик мероприятий</title>
+<meta name="description" content="Планировщик недели для строительного контроля: обходы, штабы и ВКС. Собирает шахматку мероприятий, печатает готовый плакат формата A4 и сохраняет данные в браузере.">
+<meta name="theme-color" content="#16294c">
+<meta property="og:title" content="Шахматка по неделе — планировщик мероприятий">
+<meta property="og:description" content="Обходы, штабы и ВКС: удобный план недели в стиле строительной шахматки. Печать в PDF, экспорт и обмен ссылкой.">
+<meta property="og:type" content="website">
+<link rel="icon" href="assets/favicon.png" type="image/png">
+<link rel="stylesheet" href="assets/fonts.css">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<!-- ─── SVG sprite ─────────────────────────────────────────────────────────── -->
+<svg class="sprite" width="0" height="0" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-clock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.6"/><path d="M12 7.1V12l3.2 1.9"/></g></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></g></symbol>
+    <symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="M14.5 5.5 8 12l6.5 6.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="M9.5 5.5 16 12l-6.5 6.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-print" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8.5V4h10v4.5"/><path d="M7 17.5H5.2A1.2 1.2 0 0 1 4 16.3v-5.6a1.2 1.2 0 0 1 1.2-1.2h14.6a1.2 1.2 0 0 1 1.2 1.2v5.6a1.2 1.2 0 0 1-1.2 1.2H17"/><rect x="7" y="14" width="10" height="6.5" rx="1"/></g></symbol>
+    <symbol id="i-dots" viewBox="0 0 24 24"><g fill="currentColor"><circle cx="5.5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="18.5" cy="12" r="1.7"/></g></symbol>
+    <symbol id="i-share" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 13.5a4.5 4.5 0 0 0 6.4 0l2.6-2.6a4.5 4.5 0 1 0-6.4-6.4L11.9 5.7"/><path d="M13.5 10.5a4.5 4.5 0 0 0-6.4 0l-2.6 2.6a4.5 4.5 0 1 0 6.4 6.4l1.2-1.2"/></g></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="m7.5 10.5 4.5 4.5 4.5-4.5"/><path d="M5 19.5h14"/></g></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4"/><path d="m7.5 8.5 4.5-4.5 4.5 4.5"/><path d="M5 19.5h14"/></g></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M15 5.5V5a2 2 0 0 0-2-2H5.8A1.8 1.8 0 0 0 4 4.8V13a2 2 0 0 0 2 2h.5"/></g></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 6.5h15"/><path d="M9 6.5V4.8A.8.8 0 0 1 9.8 4h4.4a.8.8 0 0 1 .8.8v1.7"/><path d="M6.5 6.5 7.4 19a1.2 1.2 0 0 0 1.2 1.1h6.8a1.2 1.2 0 0 0 1.2-1.1l.9-12.5"/><path d="M10.2 10v6M13.8 10v6"/></g></symbol>
+    <symbol id="i-pencil" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15.6 4.6a2.1 2.1 0 0 1 3 3L9 17.2l-4 1 1-4Z"/><path d="m14 6.2 3 3"/></g></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.1"/><path d="M19.4 14.2a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.03 1.56V20a2 2 0 1 1-4 0v-.11a1.7 1.7 0 0 0-1.11-1.56 1.7 1.7 0 0 0-1.87.34l-.06.06A2 2 0 1 1 3.14 15.9l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.56-1.03H2a2 2 0 1 1 0-4h.11A1.7 1.7 0 0 0 3.67 7.9a1.7 1.7 0 0 0-.34-1.87l-.06-.06A2 2 0 1 1 6.1 3.14l.06.06a1.7 1.7 0 0 0 1.87.34H8.1a1.7 1.7 0 0 0 1.03-1.56V2a2 2 0 1 1 4 0v.11a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87v.08a1.7 1.7 0 0 0 1.56 1.03H22a2 2 0 1 1 0 4h-.11a1.7 1.7 0 0 0-1.56 1.03Z"/></g></symbol>
+    <symbol id="i-sparkles" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m11 3.5 1.6 4.2 4.2 1.6-4.2 1.6L11 15.1 9.4 10.9 5.2 9.3l4.2-1.6Z"/><path d="m18 14.5.9 2.3 2.3.9-2.3.9-.9 2.3-.9-2.3-2.3-.9 2.3-.9Z"/></g></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="m6.5 6.5 11 11M17.5 6.5l-11 11" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></symbol>
+  </defs>
+</svg>
+
+<!-- ─── Toolbar ────────────────────────────────────────────────────────────── -->
+<div class="app">
+  <header class="topbar">
+    <div class="topbar__in">
+      <a class="brand" href="./" aria-label="Шахматка по неделе — на главную">
+        <span class="brand__mark"><img src="assets/logo-mark.png" alt="" width="256" height="110"></span>
+        <span class="brand__text">
+          <strong>Шахматка</strong>
+          <span>планировщик недели</span>
+        </span>
+      </a>
+
+      <nav class="weeknav" aria-label="Навигация по неделям">
+        <button type="button" class="iconbtn" id="prevWeek" aria-label="Предыдущая неделя" title="Предыдущая неделя (←)">
+          <svg class="i" aria-hidden="true"><use href="#i-chevron-left"/></svg>
+        </button>
+        <span class="weeknav__label" id="weekLabel">—</span>
+        <button type="button" class="iconbtn" id="nextWeek" aria-label="Следующая неделя" title="Следующая неделя (→)">
+          <svg class="i" aria-hidden="true"><use href="#i-chevron-right"/></svg>
+        </button>
+        <button type="button" class="btn btn--today" id="todayBtn">Сегодня</button>
+      </nav>
+
+      <div class="topbar__actions">
+        <button type="button" class="btn btn--primary" id="addBtn">
+          <svg class="i" aria-hidden="true"><use href="#i-plus"/></svg>
+          <span>Мероприятие</span>
+        </button>
+        <button type="button" class="btn btn--print" id="printBtn" title="Печать или сохранение в PDF (Ctrl+P)">
+          <svg class="i" aria-hidden="true"><use href="#i-print"/></svg>
+          <span>Печать</span>
+        </button>
+        <div class="menu" id="menu">
+          <button type="button" class="iconbtn iconbtn--bordered" id="menuBtn" aria-haspopup="true" aria-expanded="false" aria-label="Ещё" title="Ещё">
+            <svg class="i" aria-hidden="true"><use href="#i-dots"/></svg>
+          </button>
+          <div class="menu__list" id="menuList" role="menu" hidden>
+            <button type="button" class="menu__item" role="menuitem" data-menu="share"><svg class="i" aria-hidden="true"><use href="#i-share"/></svg>Поделиться ссылкой</button>
+            <button type="button" class="menu__item" role="menuitem" data-menu="export"><svg class="i" aria-hidden="true"><use href="#i-download"/></svg>Экспорт JSON</button>
+            <button type="button" class="menu__item" role="menuitem" data-menu="import"><svg class="i" aria-hidden="true"><use href="#i-upload"/></svg>Импорт JSON</button>
+            <div class="menu__sep" role="separator"></div>
+            <button type="button" class="menu__item" role="menuitem" data-menu="copyPrev"><svg class="i" aria-hidden="true"><use href="#i-copy"/></svg>Копировать прошлую неделю</button>
+            <button type="button" class="menu__item" role="menuitem" data-menu="demo"><svg class="i" aria-hidden="true"><use href="#i-sparkles"/></svg>Демо-данные</button>
+            <button type="button" class="menu__item" role="menuitem" data-menu="clear"><svg class="i" aria-hidden="true"><use href="#i-trash"/></svg>Очистить неделю</button>
+            <div class="menu__sep" role="separator"></div>
+            <button type="button" class="menu__item" role="menuitem" data-menu="settings"><svg class="i" aria-hidden="true"><use href="#i-settings"/></svg>Настройки</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ─── Poster ───────────────────────────────────────────────────────────── -->
+  <main class="wrap">
+    <div class="poster" id="poster">
+      <header class="poster__head">
+        <div class="poster__logo"><img src="assets/logo.png" alt="ПРОКАТМОНТАЖ" width="256" height="150"></div>
+        <div class="poster__titles">
+          <h1 id="posterTitle">Шахматка по неделе</h1>
+          <p id="posterSubtitle">График обходов, совещаний и ВКС</p>
+        </div>
+        <div class="poster__meta">
+          <div id="posterOrg">Строительный контроль</div>
+          <div id="posterNote">Неделя: ПН — ПТ</div>
+        </div>
+      </header>
+
+      <div class="week" id="week" style="--days:5"></div>
+
+      <footer class="poster__foot">
+        <section class="foot foot--legend">
+          <h2 class="foot__title">Условные обозначения</h2>
+          <div class="legend" id="legend"></div>
+        </section>
+        <section class="foot foot--total">
+          <div class="total">
+            <div class="total__label">Итого</div>
+            <div class="total__num" id="totalNum">0</div>
+            <div class="total__cap" id="totalCap">мероприятий</div>
+            <div class="total__sub" id="totalSub">за неделю · ПН–ПТ</div>
+          </div>
+        </section>
+      </footer>
+    </div>
+
+    <p class="hint">
+      <span>Клик по карточке — редактирование</span>
+      <span>Перетащите карточку, чтобы сменить день</span>
+      <span><kbd>N</kbd> новое мероприятие</span>
+      <span><kbd>←</kbd> <kbd>→</kbd> смена недели</span>
+      <span><kbd>Ctrl</kbd>+<kbd>P</kbd> печать плаката</span>
+    </p>
+  </main>
+</div>
+
+<!-- ─── Editor dialog ──────────────────────────────────────────────────────── -->
+<dialog class="modal" id="editorDialog" aria-labelledby="edTitle">
+  <form class="editor" id="editorForm" novalidate>
+    <header class="editor__head">
+      <div>
+        <div class="editor__eyebrow" id="edEyebrow">Новое мероприятие</div>
+        <div class="editor__title" id="edTitle">Понедельник</div>
+      </div>
+      <button type="button" class="iconbtn" data-close aria-label="Закрыть">
+        <svg class="i" aria-hidden="true"><use href="#i-x"/></svg>
+      </button>
+    </header>
+
+    <div class="editor__body">
+      <label class="field">
+        <span class="field__label">Время</span>
+        <input type="time" id="edTime" class="input" required step="300">
+      </label>
+
+      <div class="field">
+        <span class="field__label">Тип</span>
+        <div class="seg" id="edType" role="group" aria-label="Тип мероприятия">
+          <button type="button" class="seg__btn" data-type="walk">Обход</button>
+          <button type="button" class="seg__btn" data-type="staff">Штаб</button>
+          <button type="button" class="seg__btn" data-type="vks">ВКС</button>
+        </div>
+      </div>
+
+      <div class="field field--full">
+        <span class="field__label">Ответственный</span>
+        <input type="text" id="edPerson" class="input" list="personsList" placeholder="Фамилия И.О." autocomplete="off" required>
+        <datalist id="personsList"></datalist>
+        <span class="field__error" id="edPersonError" hidden>Укажите ответственного</span>
+      </div>
+
+      <div class="field field--full">
+        <span class="field__label">День недели</span>
+        <div class="seg seg--days" id="edDay" role="group" aria-label="День недели"></div>
+      </div>
+
+      <label class="field field--full">
+        <span class="field__label">Описание</span>
+        <textarea id="edDesc" class="input input--area" rows="3" placeholder="Что проверяем, где, с кем"></textarea>
+      </label>
+    </div>
+
+    <footer class="editor__foot">
+      <button type="button" class="btn btn--danger" id="edDelete">Удалить</button>
+      <span class="editor__spacer"></span>
+      <button type="button" class="btn" data-close>Отмена</button>
+      <button type="submit" class="btn btn--primary" id="edSave">Сохранить</button>
+    </footer>
+  </form>
+</dialog>
+
+<!-- ─── Settings dialog ────────────────────────────────────────────────────── -->
+<dialog class="modal modal--narrow" id="settingsDialog" aria-labelledby="setTitle">
+  <form class="editor" id="settingsForm">
+    <header class="editor__head">
+      <div>
+        <div class="editor__eyebrow">Оформление плаката</div>
+        <div class="editor__title" id="setTitle">Настройки</div>
+      </div>
+      <button type="button" class="iconbtn" data-close aria-label="Закрыть">
+        <svg class="i" aria-hidden="true"><use href="#i-x"/></svg>
+      </button>
+    </header>
+
+    <div class="editor__body">
+      <label class="field field--full">
+        <span class="field__label">Заголовок</span>
+        <input type="text" id="setTitleInput" class="input" maxlength="48">
+      </label>
+      <label class="field field--full">
+        <span class="field__label">Подзаголовок</span>
+        <input type="text" id="setSubtitle" class="input" maxlength="80">
+      </label>
+      <label class="field field--full">
+        <span class="field__label">Организация (правый блок)</span>
+        <input type="text" id="setOrg" class="input" maxlength="40">
+      </label>
+      <label class="field field--full">
+        <span class="field__label">Строка недели (правый блок)</span>
+        <input type="text" id="setNote" class="input" maxlength="40">
+      </label>
+      <label class="check field--full">
+        <input type="checkbox" id="setWeekend">
+        <span>Показывать субботу и воскресенье</span>
+      </label>
+    </div>
+
+    <footer class="editor__foot">
+      <span class="editor__spacer"></span>
+      <button type="button" class="btn" data-close>Отмена</button>
+      <button type="submit" class="btn btn--primary">Готово</button>
+    </footer>
+  </form>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden>
+  <span class="toast__text" id="toastText"></span>
+  <button type="button" class="toast__action" id="toastAction" hidden></button>
+</div>
+
+<input type="file" id="importFile" accept="application/json,.json" hidden>
+
+<script src="assets/app.js" defer></script>
+</body>
+</html>
